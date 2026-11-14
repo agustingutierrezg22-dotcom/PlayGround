@@ -3,72 +3,93 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <meta name="theme-color" content="#101611" />
-  <title>Block &amp; Build — Tetris House Builder</title>
+  <meta name="theme-color" content="#060a1a" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <title>Neon Strikers — 2D Car Soccer</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <main class="game-shell">
-    <header class="topbar">
-      <a class="brand" href="#" aria-label="Block and Build home"><span class="brand-mark"><i></i><i></i><i></i><i></i></span><span>BLOCK<span class="brand-amp">&amp;</span>BUILD</span></a>
-      <div class="top-note"><span class="live-dot"></span> YOUR LITTLE WORLD IS IN PROGRESS</div>
-      <button class="sound-button" id="soundBtn" aria-label="Toggle sound"><span id="soundIcon">♪</span><span>SOUND</span></button>
+  <div class="app">
+    <header class="hud">
+      <div class="team team-blue">
+        <span class="team-chip"><i></i></span>
+        <div class="team-copy"><span>BLUE</span><b id="blueScore">0</b></div>
+      </div>
+      <div class="clock" id="clockBox">
+        <span class="clock-value" id="clock">1:30</span>
+        <span class="clock-label" id="clockLabel">MATCH</span>
+      </div>
+      <div class="team team-orange">
+        <div class="team-copy"><b id="orangeScore">0</b><span>ORANGE</span></div>
+        <span class="team-chip"><i></i></span>
+      </div>
     </header>
 
-    <section class="intro-row">
-      <div>
-        <p class="eyebrow"><span>01</span> &nbsp; A BLOCK-BY-BLOCK BUILDER</p>
-        <h1>Stack blocks.<br><em>Build a home.</em></h1>
+    <main class="stage" id="stage">
+      <canvas id="game" aria-label="Neon Strikers car soccer arena"></canvas>
+
+      <div class="overlay" id="overlay">
+        <section class="panel" id="menuPanel">
+          <p class="kicker"><span class="kicker-dot"></span> 2D CAR FOOTBALL · 1 v 1</p>
+          <h1>NEON<br><em>STRIKERS</em></h1>
+          <p class="tagline">Boost, jump and flip your car into the ball. Put it in the orange net before the clock runs out.</p>
+          <button class="cta" id="playBtn">PLAY MATCH <span>▶</span></button>
+          <div class="legend">
+            <div class="legend-item"><span class="keys"><kbd>A</kbd><kbd>D</kbd></span><small>DRIVE</small></div>
+            <div class="legend-item"><span class="keys"><kbd>W</kbd><kbd>SPACE</kbd></span><small>JUMP / FLIP</small></div>
+            <div class="legend-item"><span class="keys"><kbd>SHIFT</kbd></span><small>BOOST</small></div>
+            <div class="legend-item"><span class="keys"><kbd>P</kbd></span><small>PAUSE</small></div>
+          </div>
+        </section>
+
+        <section class="panel hidden" id="pausePanel">
+          <p class="kicker">MATCH PAUSED</p>
+          <h2>Take a breath.</h2>
+          <p class="tagline">Your boost is safe. Probably.</p>
+          <button class="cta" id="resumeBtn">RESUME <span>▶</span></button>
+          <button class="ghost-btn" id="quitBtn">LEAVE MATCH</button>
+        </section>
+
+        <section class="panel hidden" id="endPanel">
+          <p class="kicker" id="endKicker">FULL TIME</p>
+          <h2 id="endTitle">VICTORY</h2>
+          <div class="final-score"><span class="fs-blue" id="endBlue">0</span><i>:</i><span class="fs-orange" id="endOrange">0</span></div>
+          <p class="tagline" id="endCopy">Clean strikes, sharp flips. Well played.</p>
+          <button class="cta" id="rematchBtn">REMATCH <span>↻</span></button>
+        </section>
       </div>
-      <p class="intro-copy">Clear rows to gather materials and watch your own little voxel home come to life.</p>
-    </section>
 
-    <section class="game-layout" aria-label="Tetris house building game">
-      <section class="play-card">
-        <div class="board-heading"><div><span class="section-label">THE QUARRY</span><span class="heading-sub">Shape the stack, shape your world</span></div><div class="level-pill"><span class="level-spark">✦</span> DAY <b id="level">01</b></div></div>
-        <div class="board-stage">
-          <div class="board-backdrop"></div>
-          <canvas id="gameCanvas" aria-label="Tetris game board"></canvas>
-          <div class="board-overlay" id="startOverlay">
-            <div class="overlay-icon">▦</div>
-            <p class="overlay-kicker">YOUR BUILD STARTS HERE</p>
-            <h2>Ready to make<br>a little magic?</h2>
-            <button class="primary-button" id="startBtn">START BUILDING <span>↗</span></button>
-            <p class="overlay-hint">OR PRESS <kbd>ENTER</kbd></p>
-          </div>
-          <div class="board-overlay hidden" id="pauseOverlay">
-            <div class="overlay-icon">Ⅱ</div><p class="overlay-kicker">TAKE YOUR TIME</p><h2>Game paused</h2><button class="primary-button" id="resumeBtn">KEEP BUILDING <span>↗</span></button>
-          </div>
-          <div class="board-overlay hidden" id="gameOverOverlay">
-            <div class="overlay-icon">⌂</div><p class="overlay-kicker">EVERY HOME HAS A STORY</p><h2>The quarry is full</h2><button class="primary-button" id="againBtn">BUILD ANOTHER <span>↗</span></button>
-          </div>
+      <div class="touch" id="touch" aria-label="Touch controls">
+        <div class="touch-side touch-left">
+          <button class="tbtn drive" data-hold="left" aria-label="Drive left"><span>◀</span></button>
+          <button class="tbtn drive" data-hold="right" aria-label="Drive right"><span>▶</span></button>
         </div>
-        <div class="board-footer"><span><span class="footer-dot"></span> <b id="statusText">WAITING FOR YOU</b></span><span>BEST <b id="bestScore">000000</b></span></div>
-      </section>
+        <div class="touch-side touch-right">
+          <button class="tbtn boost" data-hold="boost" aria-label="Boost"><span>⚡</span><small>BOOST</small></button>
+          <button class="tbtn jump" data-tap="jump" aria-label="Jump"><span>⤒</span><small>JUMP</small></button>
+        </div>
+      </div>
 
-      <aside class="side-column">
-        <section class="home-card">
-          <div class="home-top"><div><span class="section-label">YOUR HOMESTEAD</span><div class="home-title">The Spruce Nook <span class="edit-icon">✎</span></div></div><span class="weather">☀ <small>18°</small></span></div>
-          <div class="scene-wrap"><canvas id="houseCanvas" aria-label="Your house being built from blocks"></canvas><div class="scene-caption"><span class="scene-pin">●</span> SUNMEADOW · OVERWORLD</div></div>
-          <div class="build-progress"><div class="progress-copy"><span id="buildPhase">A place to begin</span><b><span id="progressText">0</span><small> / 6 ROWS</small></b></div><div class="progress-track"><span id="progressBar"></span><i></i></div></div>
-          <div class="materials"><div class="materials-head"><span class="section-label">GATHERED MATERIALS</span><span class="material-note">FROM CLEARED ROWS</span></div><div class="material-list" id="materials"></div></div>
-        </section>
-        <section class="stats-card">
-          <div class="stat"><span class="section-label">SCORE</span><strong id="score">000000</strong></div><div class="stat"><span class="section-label">ROWS</span><strong id="lines">00</strong></div><div class="stat"><span class="section-label">NEXT</span><canvas id="nextCanvas" aria-label="Next block"></canvas></div>
-        </section>
-      </aside>
-    </section>
+      <button class="icon-btn pause-btn" id="pauseBtn" aria-label="Pause match">
+        <span></span><span></span>
+      </button>
+    </main>
 
-    <footer class="bottom-row">
-      <div class="controls"><span class="section-label">HOW TO PLAY</span><div class="key-guide"><span class="key-item"><kbd>←</kbd><kbd>→</kbd><small>MOVE</small></span><span class="key-item"><kbd>↑</kbd><small>ROTATE</small></span><span class="key-item"><kbd>↓</kbd><small>SOFT DROP</small></span><span class="key-item"><kbd>SPACE</kbd><small>HARD DROP</small></span><span class="key-item"><kbd>P</kbd><small>PAUSE</small></span></div></div>
-      <div class="touch-controls" aria-label="Touch controls"><button data-action="left" aria-label="Move left">←</button><button data-action="rotate" aria-label="Rotate">↻</button><button data-action="down" aria-label="Move down">↓</button><button data-action="right" aria-label="Move right">→</button><button data-action="drop" aria-label="Hard drop">DROP</button></div>
-      <button class="restart-button" id="restartBtn"><span>↻</span> NEW WORLD</button>
+    <footer class="foot">
+      <div class="boost-meter">
+        <span class="boost-label">BOOST</span>
+        <div class="boost-track"><i id="boostFill"></i><em></em></div>
+        <span class="boost-num" id="boostNum">50</span>
+      </div>
+      <p class="foot-hint"><kbd>W</kbd>/<kbd>SPACE</kbd> jump twice to flip · <kbd>SHIFT</kbd> boost · grab the glowing pads</p>
+      <button class="icon-btn sound-btn" id="soundBtn" aria-label="Toggle sound"><span id="soundIcon">♪</span></button>
     </footer>
-    <div class="footer-note">A COZY LITTLE GAME FOR YOUR COZY LITTLE CORNER <span>✦</span></div>
-  </main>
+  </div>
+
   <script src="game.js"></script>
 </body>
 </html>
